@@ -8,11 +8,12 @@ class Event(Base):
     __tablename__ = "events"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    started_date = Column(DateTime, default=None)
-    ended_date = Column(DateTime, default=None)
-    location = Column(String)
-    attendees = Column(Integer)
-    notes = Column(String)
+    name = Column(String(80), nullable=False)
+    started_date = Column(DateTime, nullable=False, default=None)
+    ended_date = Column(DateTime, nullable=False, default=None)
+    location = Column(String(80), nullable=False)
+    attendees = Column(Integer, nullable=False)
+    notes = Column(String(255))
     contract_id = Column(
         Integer, ForeignKey('contracts.id', ondelete="CASCADE"), nullable=False, index=True, unique=True
     )
@@ -21,4 +22,4 @@ class Event(Base):
     contract = relationship("Contract", back_populates="event", uselist=False, passive_deletes=True)
 
     def __repr__(self):
-        return f"{self.__class__.__name__}, location: {self.location}, attendees: {self.attendees}"
+        return f"{self.__class__.__name__}, name: {self.name}, location: {self.location}, attendees: {self.attendees}"

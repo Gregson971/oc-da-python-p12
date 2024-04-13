@@ -1,11 +1,10 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy_utils import ChoiceType, EmailType, PasswordType
+from sqlalchemy_utils import EmailType, PasswordType, ChoiceType
 from sqlalchemy.orm import relationship
 
 from .base import Base
 
-
-ROLES = [('commercial', 'Commercial'), ('support', 'Support'), ('manager', 'Manager')]
+ROLES = [("commercial", "Commercial"), ("support", "Support"), ("manager", "Manager")]
 
 
 class Collaborator(Base):
@@ -16,7 +15,7 @@ class Collaborator(Base):
     last_name = Column(String(80), nullable=False)
     email = Column(EmailType, nullable=False, unique=True)
     password = Column(PasswordType(schemes=['pbkdf2_sha512', 'md5_crypt'], deprecated=['md5_crypt']), nullable=False)
-    role = Column(ChoiceType(ROLES), nullable=False)
+    role = Column(ChoiceType(ROLES), default="manager")
 
     def __repr__(self):
         return f"{self.__class__.__name__}, name: {self.first_name} {self.last_name}, email: {self.email}"

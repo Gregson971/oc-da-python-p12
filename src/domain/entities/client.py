@@ -9,12 +9,12 @@ class Client(Base):
     __tablename__ = "clients"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    information = Column(String)
-    first_name = Column(String)
-    last_name = Column(String)
-    email = Column(String)
-    phone_number = Column(String)
-    company_name = Column(String)
+    information = Column(String(80), nullable=False)
+    first_name = Column(String(80), nullable=False)
+    last_name = Column(String(80), nullable=False)
+    email = Column(String, nullable=False, unique=True)
+    phone_number = Column(String, nullable=False)
+    company_name = Column(String, nullable=False)
     created_date = Column(DateTime, default=datetime.now(timezone.utc))
     updated_date = Column(DateTime, onupdate=datetime.now(timezone.utc))
     commercial_id = Column(Integer, ForeignKey('commercials.id', ondelete="CASCADE"), nullable=False, index=True)

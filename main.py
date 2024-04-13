@@ -1,41 +1,37 @@
 import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session
 from dotenv import load_dotenv
 
-
-# Load the environment variables
-load_dotenv()
-
-# Get the environment variable
-db_user = os.getenv("DB_USER")
-db_password = os.getenv("DB_PASSWORD")
-db_host = os.getenv("DB_HOST")
-db_port = os.getenv("DB_PORT")
-db_name = os.getenv("DB_NAME")
-
-# Create the connection string
-connection_string = f"postgresql+psycopg2://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-
-# Create the engine
-engine = create_engine(connection_string)
+from src.domain.entities.base import Base
+from src.infrastructure.views.cli import Cli
 
 
-# Create the session
-Session = sessionmaker(bind=engine)
-session = Session()
+def main():
+    # Load the environment variables
+    load_dotenv()
 
-# Connect to the database
-with engine.connect() as connection:
-    print("connected to the database")
+    # Get the environment variable
+    db_user = os.getenv("DB_USER")
+    db_password = os.getenv("DB_PASSWORD")
+    db_host = os.getenv("DB_HOST")
+    db_port = os.getenv("DB_PORT")
+    db_name = os.getenv("DB_NAME")
 
-# Close the session
-session.close()
-print("session closed")
+    # Create the connection string
+    connection_string = f"postgresql+psycopg2://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 
-# Close the engine
-engine.dispose()
-print("connection closed")
+    # Create the engine
+    engine = create_engine(connection_string)
+
+    # Create the tables
+    Base.metadata.create_all(engine)
+
+    with Session(engine) as session:
+        cli = Cli(session)
+        cli.run()
+
 
 if __name__ == "__main__":
+    main()
     print("main.py executed")

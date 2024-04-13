@@ -1,12 +1,12 @@
 import pytest
-from datetime import datetime
 import uuid
+from datetime import datetime
 
-from app.repository.models.base import Base
-from app.repository.models.event import Event
-from app.repository.models.collaborator import Support
-from app.repository.models.contract import Contract
-from app.repository.models.client import Client
+from src.domain.entities.base import Base
+from src.domain.entities.collaborator import Collaborator
+from src.domain.entities.client import Client
+from src.domain.entities.contract import Contract
+from src.domain.entities.event import Event
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -24,13 +24,7 @@ def session():
     session.rollback()
 
 
-def test_create_event(session):
-    support = Support(
-        first_name="Alice", last_name="Smith", email="alice@example.com", password="password", role="support"
-    )
-    session.add(support)
-    session.commit()
-
+def test_create_collaborator(session):
     client = Client(
         information="Client Information",
         first_name="John",
@@ -47,7 +41,7 @@ def test_create_event(session):
     contract = Contract(
         uniq_id=uuid.uuid4(),
         client_id=client.id,
-        support_id=support.id,
+        support_id=1,
         total_amount=1000.0,
         remaining_amount=500.0,
         created_date=datetime.now(),
@@ -57,30 +51,32 @@ def test_create_event(session):
     session.commit()
 
     event = Event(
+        id=1,
+        name='Event name',
         started_date=datetime.now(),
         ended_date=datetime.now(),
         location='Event location',
         attendees=10,
         notes='Event notes',
-        support_contact_id=support.id,
         contract_id=contract.id,
+        support_contact_id=1,
     )
 
     session.add(event)
     session.commit()
 
-    assert event.id is not None
-
-
-def test_event_repr():
-    event = Event(
-        started_date=datetime.now(),
-        ended_date=datetime.now(),
-        location='Event location',
-        attendees=10,
-        notes='Event notes',
-        support_contact_id=1,
-        contract_id=1,
+    collaborator = Collaborator(
+        first_name="John", last_name="Doe", email="john@example.com", password="password", role="manager"
     )
 
-    assert repr(event) == "Event, location: Event location, attendees: 10"
+    session.add(collaborator)
+    session.commit()
+
+    assert collaborator.id is not None
+
+
+def test_collaborator_repr():
+    collaborator = Collaborator(
+        first_name="John", last_name="Doe", email="john@example.com", password="password", role="manager"
+    )
+    assert collaborator.__repr__() == "Collaborator, name: John Doe, email: john@example.com"
