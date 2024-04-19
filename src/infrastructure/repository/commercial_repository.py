@@ -12,6 +12,7 @@ class CommercialRepository(CommercialRepositoryInterface):
             last_name=commercial.last_name,
             email=commercial.email,
             password=commercial.password,
+            role='commercial',
         )
 
         self.session.add(commercial_entity)

@@ -14,7 +14,7 @@ class Contract(Base):
     __tablename__ = "contracts"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    uniq_id = Column(UUIDType(binary=False), default=uuid.uuid4, unique=True, nullable=False)
+    uniq_id = Column(UUIDType(binary=False), default=uuid.uuid4, unique=True)
     total_amount = Column(Float)
     remaining_amount = Column(Float)
     created_date = Column(DateTime, default=datetime.now(timezone.utc))

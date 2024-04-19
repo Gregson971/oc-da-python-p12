@@ -17,7 +17,7 @@ Développez une architecture back-end sécurisée avec Python et SQL
 
 ### Pré-requis
 
-- Avoir `Python`, `pip` et `postgreSQL` installé sur sa machine.
+- Avoir `Python`, `pip`, `Poetry` et `postgreSQL` installé sur sa machine.
 
 ### Création de la base de données
 
@@ -64,29 +64,16 @@ git clone https://github.com/Gregson971/oc-da-python-p12.git
 cd /oc-da-python-p12
 ```
 
-3. Créer l'environnement virtuel
+3. Installer les dépendances
 
 ```sh
-python -m venv env
+poetry install
 ```
 
-4. Activer l'environnement virtuel \
-   Si vous utilisez Mac ou Linux
+4. Activer l'environnement virtuel
 
 ```sh
-source env/bin/activate
-```
-
-Si vous utilisez Windows
-
-```sh
-env\Scripts\activate.bat
-```
-
-5. Installer les packages requis
-
-```sh
-pip install -r requirements.txt
+poetry shell
 ```
 
 6. Exécuter le script

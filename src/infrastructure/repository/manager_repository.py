@@ -6,18 +6,19 @@ class ManagerRepository(ManagerRepositoryInterface):
     def __init__(self, session):
         self.session = session
 
-    def create_manager(self, manager: ManagerEntity):
+    def create_manager(self, manager: ManagerEntity) -> None:
         manager_entity = ManagerEntity(
             first_name=manager.first_name,
             last_name=manager.last_name,
             email=manager.email,
             password=manager.password,
+            role='manager',
         )
 
         self.session.add(manager_entity)
         self.session.commit()
 
-    def get_manager(self, manager_id: int):
+    def get_manager(self, manager_id: int) -> ManagerEntity:
         manager = self.session.query(ManagerEntity).get(manager_id)
 
         if manager is None:
@@ -25,7 +26,7 @@ class ManagerRepository(ManagerRepositoryInterface):
 
         return manager
 
-    def get_managers(self):
+    def get_managers(self) -> list[ManagerEntity]:
         managers = self.session.query(ManagerEntity).all()
 
         if managers is None:
@@ -33,7 +34,7 @@ class ManagerRepository(ManagerRepositoryInterface):
 
         return managers
 
-    def update_manager(self, manager):
+    def update_manager(self, manager) -> None:
         manager_entity = self.get_manager(manager.id)
 
         manager_entity.first_name = manager.first_name
@@ -43,7 +44,7 @@ class ManagerRepository(ManagerRepositoryInterface):
 
         self.session.commit()
 
-    def delete_manager(self, manager_id: int):
+    def delete_manager(self, manager_id: int) -> None:
         manager = self.get_manager(manager_id)
 
         self.session.delete(manager)
