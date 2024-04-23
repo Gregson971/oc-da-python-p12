@@ -1,4 +1,6 @@
-from src.domain.entities.collaborator import Collaborator
+from dotenv import load_dotenv
+
+from src.infrastructure.services.get_token_payload import get_token_payload
 
 ROLES = {
     'manager': [
@@ -12,6 +14,7 @@ ROLES = {
     ],
     'commercial': ['create_client', 'update_client', 'update_client_contract', 'filter_contracts', 'create_event'],
     'support': ['filter_events', 'update_event'],
+    'admin': ['create_collaborator', 'update_collaborator', 'delete_collaborator'],
 }
 
 
@@ -21,10 +24,16 @@ def check_permission(role, permission):
 
 def require_permission(permission):
     def decorator(func):
-        def wrapper(self, *args, **kwargs):
-            if not check_permission(Collaborator.role, permission):
+        def wrapper(*args, **kwargs):
+            load_dotenv()
+
+            payload = get_token_payload()
+            role = payload['role']
+
+            if not check_permission(role, permission):
                 raise PermissionError("Permission denied.")
-            return func(self, *args, **kwargs)
+
+            return func(*args, **kwargs)
 
         return wrapper
 

@@ -14,6 +14,7 @@ class ClientRepository(ClientRepositoryInterface):
             email=client.email,
             phone_number=client.phone_number,
             company_name=client.company_name,
+            commercial_id=client.commercial_id,
         )
 
         self.session.add(client_entity)

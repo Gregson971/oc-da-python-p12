@@ -162,3 +162,5 @@ cython_debug/
 # VSCode config is in .vscode/settings.json
 .vscode/
 .DS_Store
+
+.token
