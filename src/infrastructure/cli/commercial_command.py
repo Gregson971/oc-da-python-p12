@@ -3,6 +3,7 @@ from types import SimpleNamespace
 
 from src.infrastructure.services.database_connect import set_session
 from src.infrastructure.services.get_token_payload import get_token_payload
+from src.infrastructure.services.remove_token import remove_token
 
 from src.domain.use_cases.manage_commercial import ManageCommercial
 
@@ -26,6 +27,7 @@ class CommercialCommand:
         console.print("5. Show unpaid contracts", style="bold green")
         console.print("6. Create an event", style="bold green")
         console.print("7. Exit", style="bold green")
+        console.print("8. Logout", style="bold green")
 
         option = int(input("Choose an option: "))
 
@@ -43,6 +45,8 @@ class CommercialCommand:
             self.create_event()
         elif option == 7:
             self.exit()
+        elif option == 8:
+            self.logout()
 
     def create_client(self):
         """Create a client."""
@@ -89,6 +93,24 @@ class CommercialCommand:
     def create_event(self):
         """Create an event."""
         pass
+
+    def get_clients(self):
+        """Show clients."""
+        pass
+
+    def get_contrats(self):
+        """Show contracts."""
+        pass
+
+    def get_events(self):
+        """Show events."""
+        pass
+
+    def logout(self):
+        """Logout a collaborator."""
+        remove_token()
+        console.print("Collaborator logged out successfully!", style="bold green")
+        self.exit()
 
     def exit(self) -> None:
         console.print("Exiting...", style="bold blue")

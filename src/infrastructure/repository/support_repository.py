@@ -1,3 +1,6 @@
+from sentry_sdk import capture_exception
+from sqlalchemy.exc import IntegrityError
+
 from src.domain.interfaces.support_repository_interface import SupportRepositoryInterface
 from src.domain.entities.collaborator import Support as SupportEntity
 
@@ -7,16 +10,24 @@ class SupportRepository(SupportRepositoryInterface):
         self.session = session
 
     def create_support(self, support: SupportEntity) -> None:
-        support_entity = SupportEntity(
-            first_name=support.first_name,
-            last_name=support.last_name,
-            email=support.email,
-            password=support.password,
-            role='support',
-        )
+        try:
+            support_entity = SupportEntity(
+                first_name=support.first_name,
+                last_name=support.last_name,
+                email=support.email,
+                password=support.password,
+                role='support',
+            )
 
-        self.session.add(support_entity)
-        self.session.commit()
+            self.session.add(support_entity)
+            self.session.commit()
+
+        except IntegrityError as e:
+            capture_exception(e)
+            raise Exception("Email already exists")
+        except Exception as e:
+            capture_exception(e)
+            raise Exception(f"An error occurred while creating the support collaborator: {e}")
 
     def get_support(self, support_id: int) -> SupportEntity:
         support = self.session.query(SupportEntity).get(support_id)

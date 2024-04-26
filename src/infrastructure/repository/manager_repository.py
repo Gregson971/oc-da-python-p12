@@ -1,3 +1,6 @@
+from sentry_sdk import capture_exception
+from sqlalchemy.exc import IntegrityError
+
 from src.domain.interfaces.manager_repository_interface import ManagerRepositoryInterface
 from src.domain.entities.collaborator import Manager as ManagerEntity
 
@@ -7,16 +10,24 @@ class ManagerRepository(ManagerRepositoryInterface):
         self.session = session
 
     def create_manager(self, manager: ManagerEntity) -> None:
-        manager_entity = ManagerEntity(
-            first_name=manager.first_name,
-            last_name=manager.last_name,
-            email=manager.email,
-            password=manager.password,
-            role='manager',
-        )
+        try:
+            manager_entity = ManagerEntity(
+                first_name=manager.first_name,
+                last_name=manager.last_name,
+                email=manager.email,
+                password=manager.password,
+                role='manager',
+            )
 
-        self.session.add(manager_entity)
-        self.session.commit()
+            self.session.add(manager_entity)
+            self.session.commit()
+
+        except IntegrityError as e:
+            capture_exception(e)
+            raise Exception("Email already exists")
+        except Exception as e:
+            capture_exception(e)
+            raise Exception(f"An error occurred while creating the manager collaborator: {e}")
 
     def get_manager(self, manager_id: int) -> ManagerEntity:
         manager = self.session.query(ManagerEntity).get(manager_id)

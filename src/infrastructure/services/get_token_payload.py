@@ -2,6 +2,7 @@ import os
 import jwt
 
 from dotenv import load_dotenv
+from sentry_sdk import capture_exception
 
 
 def get_token_payload() -> dict:
@@ -16,9 +17,11 @@ def get_token_payload() -> dict:
 
         payload = jwt.decode(token, secret_key, algorithms=['HS256'])
 
-    except jwt.ExpiredSignatureError:
-        raise Exception("Token expired", 401)
-    except jwt.InvalidTokenError:
-        raise Exception("Invalid token", 401)
+    except jwt.ExpiredSignatureError as e:
+        capture_exception(e)
+        raise Exception("Token expired")
+    except jwt.InvalidTokenError as e:
+        capture_exception(e)
+        raise Exception("Invalid token")
 
     return payload

@@ -1,11 +1,14 @@
 import inquirer
+import getpass
 
 from rich.console import Console
 from types import SimpleNamespace
 
 from src.infrastructure.services.database_connect import set_session
+from src.infrastructure.services.remove_token import remove_token
 
 from src.domain.use_cases.manage_manager import ManageManager
+from src.domain.use_cases.manage_collaborator import ManageCollaborator
 
 
 console = Console()
@@ -20,13 +23,11 @@ class ManagerCommand:
         console.print("Welcome to the EpicEvents CRM CLI\n", style="bold green")
 
         console.print("Main menu", style="bold blue")
-        console.print("1. Create manager", style="bold green")
+        console.print("1. Create a collaborator", style="bold green")
         console.print("2. Update manager", style="bold green")
         console.print("3. Delete manager", style="bold red")
-        console.print("4. Create commercial", style="bold green")
         console.print("5. Update commercial", style="bold green")
         console.print("6. Delete commercial", style="bold red")
-        console.print("7. Create support", style="bold green")
         console.print("8. Update support", style="bold green")
         console.print("9. Delete support", style="bold red")
         console.print("10. Create contract", style="bold green")
@@ -34,45 +35,47 @@ class ManagerCommand:
         console.print("12. Show events with no assigned support", style="bold green")
         console.print("13. Update event", style="bold green")
         console.print("14. Exit", style="bold green")
+        console.print("15. Logout", style="bold green")
 
         option = int(input("Choose an option: "))
 
         if option == 1:
-            self.create_manager()
+            self.create_collaborator()
         elif option == 2:
             self.update_manager()
         elif option == 3:
             self.delete_manager()
         elif option == 4:
-            self.create_commercial()
-        elif option == 5:
             self.update_commercial()
-        elif option == 6:
+        elif option == 5:
             self.delete_commercial()
-        elif option == 7:
-            self.create_support()
-        elif option == 8:
+        elif option == 6:
             self.update_support()
-        elif option == 9:
+        elif option == 7:
             self.delete_support()
-        elif option == 10:
+        elif option == 8:
             self.create_contract()
-        elif option == 11:
+        elif option == 9:
             self.update_contract()
-        elif option == 12:
+        elif option == 10:
             self.get_events_with_no_assigned_support()
-        elif option == 13:
+        elif option == 11:
             self.update_event()
-        elif option == 14:
+        elif option == 12:
             self.exit()
+        elif option == 13:
+            self.logout()
 
     def get_collaborator_information(self):
         """Get collaborator information."""
+        roles = [inquirer.List("role", message="Select a role", choices=["manager", "commercial", "support", "admin"])]
+
         first_name = input("First name: ")
         last_name = input("Last name: ")
         email = input("Email: ")
-        password = input("Password: ")
-        confirm_password = input("Confirm password: ")
+        role = inquirer.prompt(roles)["role"]
+        password = getpass.getpass("Password: ")
+        confirm_password = getpass.getpass("Confirm password: ")
 
         if password != confirm_password:
             console.print("Passwords do not match!", style="bold red")
@@ -82,17 +85,19 @@ class ManagerCommand:
             first_name=first_name,
             last_name=last_name,
             email=email,
+            role=role,
             password=password,
         )
 
-    def create_manager(self):
-        """Create manager."""
-        collaborator = self.get_collaborator_information()
+    def create_collaborator(self):
+        """Create collaborators."""
+        collaborator_data = self.get_collaborator_information()
 
-        manageManager.create_manager(collaborator)
+        collaborator = ManageCollaborator(session)
+        collaborator.register_collaborator(collaborator_data)
 
         console.print(
-            f"Manager: {collaborator.first_name} {collaborator.last_name} created successfully!",
+            f"Collaborator: {collaborator_data.first_name} {collaborator_data.last_name} created successfully!",
             style="bold green",
         )
 
@@ -106,19 +111,6 @@ class ManagerCommand:
         """Delete manager."""
         pass
 
-    def create_commercial(self):
-        """Create commercial."""
-        collaborator = self.get_collaborator_information()
-
-        manageManager.create_commercial(collaborator)
-
-        console.print(
-            f"Commercial: {collaborator.first_name} {collaborator.last_name} created successfully!",
-            style="bold green",
-        )
-
-        self.run()
-
     def update_commercial(self):
         """Update commercial."""
         pass
@@ -126,19 +118,6 @@ class ManagerCommand:
     def delete_commercial(self):
         """Delete commercial."""
         pass
-
-    def create_support(self):
-        """Create support."""
-        collaborator = self.get_collaborator_information()
-
-        manageManager.create_support(collaborator)
-
-        console.print(
-            f"Support: {collaborator.first_name} {collaborator.last_name} created successfully!",
-            style="bold green",
-        )
-
-        self.run()
 
     def update_support(self):
         """Update support."""
@@ -190,6 +169,24 @@ class ManagerCommand:
     def update_event(self):
         """Update event."""
         pass
+
+    def get_clients(self):
+        """Show clients."""
+        pass
+
+    def get_contrats(self):
+        """Show contracts."""
+        pass
+
+    def get_events(self):
+        """Show events."""
+        pass
+
+    def logout(self):
+        """Logout a collaborator."""
+        remove_token()
+        console.print("Collaborator logged out successfully!", style="bold green")
+        self.exit()
 
     def exit(self):
         console.print("Exiting...", style="bold blue")

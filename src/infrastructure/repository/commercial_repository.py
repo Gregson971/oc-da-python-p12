@@ -1,3 +1,6 @@
+from sentry_sdk import capture_exception
+from sqlalchemy.exc import IntegrityError
+
 from src.domain.interfaces.commercial_repository_interface import CommercialRepositoryInterface
 from src.domain.entities.collaborator import Commercial as CommercialEntity
 
@@ -7,16 +10,24 @@ class CommercialRepository(CommercialRepositoryInterface):
         self.session = session
 
     def create_commercial(self, commercial: CommercialEntity) -> None:
-        commercial_entity = CommercialEntity(
-            first_name=commercial.first_name,
-            last_name=commercial.last_name,
-            email=commercial.email,
-            password=commercial.password,
-            role='commercial',
-        )
+        try:
+            commercial_entity = CommercialEntity(
+                first_name=commercial.first_name,
+                last_name=commercial.last_name,
+                email=commercial.email,
+                password=commercial.password,
+                role='commercial',
+            )
 
-        self.session.add(commercial_entity)
-        self.session.commit()
+            self.session.add(commercial_entity)
+            self.session.commit()
+
+        except IntegrityError as e:
+            capture_exception(e)
+            raise Exception("Email already exists")
+        except Exception as e:
+            capture_exception(e)
+            raise Exception(f"An error occurred while creating the commercial collaborator: {e}")
 
     def get_commercial(self, commercial_id: int) -> CommercialEntity:
         commercial = self.session.query(CommercialEntity).get(commercial_id)

@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, timezone
 from rich.console import Console
 from dotenv import load_dotenv
 
+from src.domain.permissions.collaborator_permission import require_permission
 from src.domain.entities.collaborator import Collaborator
 from src.infrastructure.repository.collaborator_repository import CollaboratorRepository
 
@@ -15,6 +16,7 @@ class ManageCollaborator:
     def __init__(self, session):
         self.session = session
 
+    @require_permission('create_collaborator')
     def register_collaborator(self, collaborator: Collaborator) -> Collaborator:
         return CollaboratorRepository(self.session).register_collaborator(collaborator)
 
