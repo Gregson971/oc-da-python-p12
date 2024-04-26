@@ -10,7 +10,6 @@ from src.domain.use_cases.manage_commercial import ManageCommercial
 console = Console()
 session = set_session()
 manage_commercial = ManageCommercial(session)
-payload = get_token_payload()
 
 
 class CommercialCommand:
@@ -47,6 +46,7 @@ class CommercialCommand:
 
     def create_client(self):
         """Create a client."""
+        payload = get_token_payload()
 
         information = input("Information: ")
         first_name = input("First name: ")

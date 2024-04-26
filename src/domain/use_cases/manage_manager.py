@@ -29,6 +29,10 @@ class ManageManager:
         return EventRepository(self.session).get_events()
 
     @require_permission('create_collaborator')
+    def get_supports(self) -> List[Support]:
+        return SupportRepository(self.session).get_supports()
+
+    @require_permission('create_collaborator')
     def create_manager(self, manager: Manager) -> Manager:
         return ManagerRepository(self.session).create_manager(manager)
 

@@ -17,8 +17,8 @@ def get_token_payload() -> dict:
         payload = jwt.decode(token, secret_key, algorithms=['HS256'])
 
     except jwt.ExpiredSignatureError:
-        raise Exception("Token expired")
+        raise Exception("Token expired", 401)
     except jwt.InvalidTokenError:
-        raise Exception("Invalid token")
+        raise Exception("Invalid token", 401)
 
     return payload

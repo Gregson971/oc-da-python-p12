@@ -1,3 +1,5 @@
+import inquirer
+
 from rich.console import Console
 from types import SimpleNamespace
 
@@ -64,8 +66,8 @@ class ManagerCommand:
         elif option == 14:
             self.exit()
 
-    def create_manager(self):
-        """Create manager."""
+    def get_collaborator_information(self):
+        """Get collaborator information."""
         first_name = input("First name: ")
         last_name = input("Last name: ")
         email = input("Email: ")
@@ -76,15 +78,25 @@ class ManagerCommand:
             console.print("Passwords do not match!", style="bold red")
             return
 
-        manageManager.create_manager(
-            SimpleNamespace(
-                first_name=first_name,
-                last_name=last_name,
-                email=email,
-                password=password,
-            )
+        return SimpleNamespace(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            password=password,
         )
-        console.print(f"Collaborator {first_name} {last_name} created successfully!", style="bold green")
+
+    def create_manager(self):
+        """Create manager."""
+        collaborator = self.get_collaborator_information()
+
+        manageManager.create_manager(collaborator)
+
+        console.print(
+            f"Manager: {collaborator.first_name} {collaborator.last_name} created successfully!",
+            style="bold green",
+        )
+
+        self.run()
 
     def update_manager(self):
         """Update manager."""
@@ -96,7 +108,16 @@ class ManagerCommand:
 
     def create_commercial(self):
         """Create commercial."""
-        pass
+        collaborator = self.get_collaborator_information()
+
+        manageManager.create_commercial(collaborator)
+
+        console.print(
+            f"Commercial: {collaborator.first_name} {collaborator.last_name} created successfully!",
+            style="bold green",
+        )
+
+        self.run()
 
     def update_commercial(self):
         """Update commercial."""
@@ -108,7 +129,16 @@ class ManagerCommand:
 
     def create_support(self):
         """Create support."""
-        pass
+        collaborator = self.get_collaborator_information()
+
+        manageManager.create_support(collaborator)
+
+        console.print(
+            f"Support: {collaborator.first_name} {collaborator.last_name} created successfully!",
+            style="bold green",
+        )
+
+        self.run()
 
     def update_support(self):
         """Update support."""
@@ -120,7 +150,34 @@ class ManagerCommand:
 
     def create_contract(self):
         """Create contract."""
-        pass
+        client_list = manageManager.get_clients()
+        client_list = [(f"{client.first_name} {client.last_name}", client.id) for client in client_list]
+        client_choices = [inquirer.List("client", message="Select a client", choices=client_list)]
+
+        support_list = manageManager.get_supports()
+        support_list = [(f"{support.first_name} {support.last_name}", support.id) for support in support_list]
+        support_choices = [inquirer.List("support", message="Select a support", choices=support_list)]
+
+        status_list = ["not-signed", "signed"]
+        status_choices = [inquirer.List("status", message="Select a status", choices=status_list)]
+
+        total_amount = float(input("Total amount: "))
+        remaining_amount = float(input("Remaining amount: "))
+        status = inquirer.prompt(status_choices)["status"]
+        client_id = int(inquirer.prompt(client_choices)["client"])
+        support_id = int(inquirer.prompt(support_choices)["support"])
+
+        manageManager.create_contract(
+            SimpleNamespace(
+                total_amount=total_amount,
+                remaining_amount=remaining_amount,
+                status=status,
+                client_id=client_id,
+                support_id=support_id,
+            )
+        )
+
+        self.run()
 
     def update_contract(self):
         """Update contract."""

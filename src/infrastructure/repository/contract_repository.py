@@ -11,6 +11,8 @@ class ContractRepository(ContractRepositoryInterface):
             total_amount=contract.total_amount,
             remaining_amount=contract.remaining_amount,
             status=contract.status,
+            client_id=contract.client_id,
+            support_id=contract.support_id,
         )
 
         self.session.add(contract_entity)
