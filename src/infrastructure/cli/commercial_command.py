@@ -73,10 +73,10 @@ class CommercialCommand:
         )
 
         console.print(f"Client {first_name} {last_name} created successfully!", style="bold green")
+        self.run()
 
     def update_client(self):
         """Update a client."""
-        pass
 
     def update_contract(self):
         """Update a contract."""

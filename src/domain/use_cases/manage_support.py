@@ -18,7 +18,7 @@ class ManageSupport:
     def get_clients(self) -> List[Client]:
         return ClientRepository(self.session).get_clients()
 
-    def get_contrats(self) -> List[Contract]:
+    def get_contracts(self) -> List[Contract]:
         return ContractRepository(self.session).get_contracts()
 
     def get_events(self) -> List[Event]:

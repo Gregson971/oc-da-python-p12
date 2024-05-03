@@ -1,3 +1,6 @@
+import jwt
+
+from sentry_sdk import capture_exception
 from dotenv import load_dotenv
 
 from src.infrastructure.services.get_token_payload import get_token_payload
@@ -27,13 +30,23 @@ def require_permission(permission):
         def wrapper(*args, **kwargs):
             load_dotenv()
 
-            payload = get_token_payload()
-            role = payload['role']
+            try:
+                payload = get_token_payload()
+                role = payload['role']
 
-            if not check_permission(role, permission):
-                raise PermissionError("Permission denied.")
+                if not check_permission(role, permission):
+                    raise PermissionError("Permission denied.")
 
-            return func(*args, **kwargs)
+                return func(*args, **kwargs)
+            except jwt.ExpiredSignatureError as e:
+                capture_exception(e)
+                raise Exception("Token expired")
+            except jwt.InvalidTokenError as e:
+                capture_exception(e)
+                raise Exception("Invalid token")
+            except Exception as e:
+                capture_exception(e)
+                raise Exception(f"An error occurred while checking the permission: {e}")
 
         return wrapper
 

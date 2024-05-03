@@ -23,5 +23,8 @@ def get_token_payload() -> dict:
     except jwt.InvalidTokenError as e:
         capture_exception(e)
         raise Exception("Invalid token")
+    except FileNotFoundError as e:
+        capture_exception(e)
+        raise Exception(f"Token file not found, {e}")
 
     return payload

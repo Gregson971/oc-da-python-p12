@@ -1,4 +1,4 @@
-from sentry_sdk import capture_exception
+from sentry_sdk import capture_event, capture_exception
 from sqlalchemy.exc import IntegrityError
 
 from src.domain.interfaces.manager_repository_interface import ManagerRepositoryInterface
@@ -22,6 +22,8 @@ class ManagerRepository(ManagerRepositoryInterface):
             self.session.add(manager_entity)
             self.session.commit()
 
+            capture_event({"message": f"Manager {manager.first_name} {manager.last_name} registered", "level": "info"})
+
         except IntegrityError as e:
             capture_exception(e)
             raise Exception("Email already exists")
@@ -30,33 +32,68 @@ class ManagerRepository(ManagerRepositoryInterface):
             raise Exception(f"An error occurred while creating the manager collaborator: {e}")
 
     def get_manager(self, manager_id: int) -> ManagerEntity:
-        manager = self.session.query(ManagerEntity).get(manager_id)
+        try:
+            manager = self.session.query(ManagerEntity).get(manager_id)
 
-        if manager is None:
-            raise Exception("Manager not found")
+            if manager is None:
+                raise Exception("Manager not found")
 
-        return manager
+            capture_event(
+                {
+                    "message": f"Manager {manager.first_name} {manager.last_name} retrieved successfully",
+                    "level": "info",
+                }
+            )
+            return manager
+
+        except Exception as e:
+            capture_exception(e)
+            raise Exception(f"An error occurred while getting the manager collaborator: {e}")
 
     def get_managers(self) -> list[ManagerEntity]:
-        managers = self.session.query(ManagerEntity).all()
+        try:
+            managers = self.session.query(ManagerEntity).all()
 
-        if managers is None:
-            raise Exception("Managers not found")
+            if managers is None:
+                raise Exception("Managers not found")
 
-        return managers
+            capture_event({"message": "Managers retrieved successfully", "level": "info"})
+            return managers
+
+        except Exception as e:
+            capture_exception(e)
+            raise Exception(f"An error occurred while getting the managers collaborator: {e}")
 
     def update_manager(self, manager) -> None:
-        manager_entity = self.get_manager(manager.id)
+        try:
+            manager_entity = self.get_manager(manager.id)
 
-        manager_entity.first_name = manager.first_name
-        manager_entity.last_name = manager.last_name
-        manager_entity.email = manager.email
-        manager_entity.password = manager.password
+            manager_entity.first_name = manager.first_name
+            manager_entity.last_name = manager.last_name
+            manager_entity.email = manager.email
+            manager_entity.password = manager.password
 
-        self.session.commit()
+            self.session.commit()
+
+            capture_event(
+                {"message": f"Manager {manager.first_name} {manager.last_name} updated successfully", "level": "info"}
+            )
+
+        except Exception as e:
+            capture_exception(e)
+            raise Exception(f"An error occurred while updating the manager collaborator: {e}")
 
     def delete_manager(self, manager_id: int) -> None:
-        manager = self.get_manager(manager_id)
+        try:
+            manager = self.get_manager(manager_id)
 
-        self.session.delete(manager)
-        self.session.commit()
+            self.session.delete(manager)
+            self.session.commit()
+
+            capture_event(
+                {"message": f"Manager {manager.first_name} {manager.last_name} deleted successfully", "level": "info"}
+            )
+
+        except Exception as e:
+            capture_exception(e)
+            raise Exception(f"An error occurred while deleting the manager collaborator: {e}")

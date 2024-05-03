@@ -10,7 +10,6 @@ from src.infrastructure.services.get_token_payload import get_token_payload
 from src.infrastructure.cli.manager_command import ManagerCommand
 from src.infrastructure.cli.commercial_command import CommercialCommand
 from src.infrastructure.cli.support_command import SupportCommand
-from src.infrastructure.cli.admin_command import AdminCommand
 
 console = Console()
 session = set_session()
@@ -19,7 +18,7 @@ session = set_session()
 class MainMenu:
 
     def run(self):
-        console.print("EpicEvents CRM", style="bold blue")
+        console.print("\nEpicEvents CRM", style="bold blue")
         console.print("Welcome to the EpicEvents CRM CLI\n", style="bold green")
 
         try:
@@ -69,8 +68,6 @@ class MainMenu:
             CommercialCommand().run()
         elif role == 'support':
             SupportCommand().run()
-        elif role == 'admin':
-            AdminCommand().run()
 
     def exit(self) -> None:
         console.print("Exiting...", style="bold blue")

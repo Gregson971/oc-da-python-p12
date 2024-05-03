@@ -26,7 +26,7 @@ class EventRepositoryInterface(ABC):
         pass
 
     @abstractmethod
-    def get_events_with_no_assigned_support(self, event: Event) -> List[Event]:
+    def get_events_with_no_assigned_support(self) -> List[Event]:
         pass
 
     @abstractmethod
