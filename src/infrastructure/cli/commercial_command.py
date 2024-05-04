@@ -344,7 +344,7 @@ class CommercialCommand:
             table.add_column("Ended at", style="bold blue")
             table.add_column("Attendees", style="bold blue")
             table.add_column("Notes", style="bold blue")
-            table.add_column("Contract", style="bold blue")
+            table.add_column("Contract ID", style="bold blue")
             table.add_column("Client", style="bold blue")
 
             for event in event_list:

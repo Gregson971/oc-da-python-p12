@@ -56,14 +56,14 @@ class SupportCommand:
             self.run()
         else:
             table = Table(title="Assigned events")
-            table.add_column("Event ID")
-            table.add_column("Event name")
-            table.add_column("Event started date")
-            table.add_column("Event ended date")
-            table.add_column("Location")
-            table.add_column("Attendees")
-            table.add_column("Notes")
-            table.add_column("Client")
+            table.add_column("Event ID", style="bold blue")
+            table.add_column("Event name", style="bold blue")
+            table.add_column("Event started date", style="bold blue")
+            table.add_column("Event ended date", style="bold blue")
+            table.add_column("Location", style="bold blue")
+            table.add_column("Attendees", style="bold blue")
+            table.add_column("Notes", style="bold blue")
+            table.add_column("Client", style="bold blue")
 
             for event in assigned_events:
                 table.add_row(
@@ -121,11 +121,11 @@ class SupportCommand:
             self.run()
         else:
             table = Table(title="Clients")
-            table.add_column("First name", style="bold green")
-            table.add_column("Last name", style="bold green")
-            table.add_column("Email", style="bold green")
-            table.add_column("Phone number", style="bold green")
-            table.add_column("Company name", style="bold green")
+            table.add_column("First name", style="bold blue")
+            table.add_column("Last name", style="bold blue")
+            table.add_column("Email", style="bold blue")
+            table.add_column("Phone number", style="bold blue")
+            table.add_column("Company name", style="bold blue")
 
             for client in client_list:
                 table.add_row(
@@ -145,10 +145,10 @@ class SupportCommand:
             self.run()
         else:
             table = Table(title="Contracts")
-            table.add_column("Client", style="bold green")
-            table.add_column("Total amount", style="bold green")
-            table.add_column("Remaining amount", style="bold green")
-            table.add_column("Status", style="bold green")
+            table.add_column("Client", style="bold blue")
+            table.add_column("Total amount", style="bold blue")
+            table.add_column("Remaining amount", style="bold blue")
+            table.add_column("Status", style="bold blue")
 
             for contract in contract_list:
                 table.add_row(
@@ -171,16 +171,25 @@ class SupportCommand:
             self.run()
         else:
             table = Table(title="Events")
-            table.add_column("Name", style="bold green")
-            table.add_column("Location", style="bold green")
-            table.add_column("Started at", style="bold green")
-            table.add_column("Ended at", style="bold green")
-            table.add_column("Attendees", style="bold green")
-            table.add_column("Notes", style="bold green")
+            table.add_column("Name", style="bold blue")
+            table.add_column("Location", style="bold blue")
+            table.add_column("Started at", style="bold blue")
+            table.add_column("Ended at", style="bold blue")
+            table.add_column("Attendees", style="bold blue")
+            table.add_column("Notes", style="bold blue")
+            table.add_column("Contract ID", style="bold blue")
+            table.add_column("Client", style="bold blue")
 
             for event in event_list:
                 table.add_row(
-                    event.name, event.location, event.started_date, event.ended_date, event.attendees, event.notes
+                    event.name,
+                    event.location,
+                    event.started_date.strftime("%m/%d/%Y, %H:%M:%S"),
+                    event.ended_date.strftime("%m/%d/%Y, %H:%M:%S"),
+                    str(event.attendees),
+                    event.notes,
+                    str(event.contract.uniq_id),
+                    f"{event.contract.client.first_name} {event.contract.client.last_name}",
                 )
 
             console.print(table)
