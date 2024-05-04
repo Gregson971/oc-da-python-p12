@@ -15,7 +15,14 @@ ROLES = {
         'filter_events',
         'update_event',
     ],
-    'commercial': ['create_client', 'update_client', 'update_client_contract', 'filter_contracts', 'create_event'],
+    'commercial': [
+        'create_client',
+        'update_client',
+        'create_client_contract',
+        'update_client_contract',
+        'filter_contracts',
+        'create_event',
+    ],
     'support': ['filter_events', 'update_event'],
     'admin': ['create_collaborator', 'update_collaborator', 'delete_collaborator'],
 }

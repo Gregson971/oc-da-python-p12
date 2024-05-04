@@ -14,11 +14,13 @@ class EventRepository(EventRepositoryInterface):
         try:
             event_entity = Event(
                 name=event.name,
-                started_at=event.started_at,
-                ended_at=event.ended_at,
+                started_date=event.started_date,
+                ended_date=event.ended_date,
                 location=event.location,
-                attendes=event.attendes,
+                attendees=event.attendees,
                 notes=event.notes,
+                support_contact_id=event.support_contact_id,
+                contract_id=event.contract_id,
             )
 
             self.session.add(event_entity)

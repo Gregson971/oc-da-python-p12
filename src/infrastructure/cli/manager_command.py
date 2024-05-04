@@ -65,6 +65,7 @@ class ManagerCommand:
             selected_method()
         else:
             console.print("Invalid option selected.", style="bold red")
+            self.run()
 
     def get_collaborator_information(self):
         """Get collaborator information."""
@@ -420,17 +421,19 @@ class ManagerCommand:
             self.run()
         else:
             table = Table(title="Contracts")
-            table.add_column("Client", style="bold green")
+            table.add_column("ID", style="bold green")
             table.add_column("Total amount", style="bold green")
             table.add_column("Remaining amount", style="bold green")
             table.add_column("Status", style="bold green")
+            table.add_column("Client", style="bold green")
 
             for contract in contract_list:
                 table.add_row(
-                    contract.client.first_name + " " + contract.client.last_name,
+                    str(contract.id),
                     str(contract.total_amount),
                     str(contract.remaining_amount),
                     str(contract.status),
+                    contract.client.first_name + " " + contract.client.last_name,
                 )
 
             console.print(table)

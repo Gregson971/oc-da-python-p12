@@ -25,6 +25,10 @@ class ManageCommercial:
         return EventRepository(self.session).get_events()
 
     @require_permission('create_client')
+    def get_client(self, client_id: int) -> Client:
+        return ClientRepository(self.session).get_client(client_id)
+
+    @require_permission('create_client')
     def create_client(self, client: Client) -> Client:
         return ClientRepository(self.session).create_client(client)
 
@@ -32,17 +36,25 @@ class ManageCommercial:
     def update_client(self, client: Client) -> Client:
         return ClientRepository(self.session).update_client(client)
 
+    @require_permission('create_client_contract')
+    def get_contracts(self) -> List[Contract]:
+        return ContractRepository(self.session).get_contracts()
+
+    @require_permission('create_client_contract')
+    def get_contract(self, contract_id: int) -> Contract:
+        return ContractRepository(self.session).get_contract(contract_id)
+
     @require_permission('update_client_contract')
     def update_contract(self, contract: Contract) -> Contract:
         return ContractRepository(self.session).update_contract(contract)
 
     @require_permission('filter_contracts')
-    def get_unsigned_contracts(self, contract: Contract) -> List[Contract]:
-        return ContractRepository(self.session).get_unsigned_contracts(contract)
+    def get_unsigned_contracts(self) -> List[Contract]:
+        return ContractRepository(self.session).get_unsigned_contracts()
 
     @require_permission('filter_contracts')
-    def get_unpaid_contracts(self, contract: Contract) -> List[Contract]:
-        return ContractRepository(self.session).get_unpaid_contracts(contract)
+    def get_unpaid_contracts(self) -> List[Contract]:
+        return ContractRepository(self.session).get_unpaid_contracts()
 
     @require_permission('create_event')
     def create_event(self, event: Event) -> Event:
