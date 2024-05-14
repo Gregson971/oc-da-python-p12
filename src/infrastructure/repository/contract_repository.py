@@ -1,12 +1,13 @@
 from sentry_sdk import capture_event, capture_exception
 
+from sqlalchemy.exc import IntegrityError
+
 from src.domain.interfaces.contract_repository_interface import ContractRepositoryInterface
+from src.infrastructure.repository.abstract_repository import AbstractRepository
 from src.domain.entities.contract import Contract
 
 
-class ContractRepository(ContractRepositoryInterface):
-    def __init__(self, session):
-        self.session = session
+class ContractRepository(ContractRepositoryInterface, AbstractRepository):
 
     def create_contract(self, contract: Contract) -> None:
         try:
@@ -18,9 +19,12 @@ class ContractRepository(ContractRepositoryInterface):
                 support_id=contract.support_id,
             )
 
-            self.session.add(contract_entity)
-            self.session.commit()
-            capture_event({"message": f"Contract {contract.id} created", "level": "info"})
+            self.add(contract_entity)
+            capture_event({"message": "Contract created sucessfully", "level": "info"})
+
+        except IntegrityError as e:
+            capture_exception(e)
+            raise Exception("Contract already exists for this client")
 
         except Exception as e:
             capture_exception(e)
@@ -28,7 +32,7 @@ class ContractRepository(ContractRepositoryInterface):
 
     def get_contract(self, contract_id: int) -> Contract:
         try:
-            contract = self.session.query(Contract).get(contract_id)
+            contract = self.get(Contract, contract_id)
 
             if contract is None:
                 raise Exception("Contract not found")
@@ -47,7 +51,7 @@ class ContractRepository(ContractRepositoryInterface):
 
     def get_contracts(self) -> list[Contract]:
         try:
-            contracts = self.session.query(Contract).all()
+            contracts = self.get_all(Contract)
 
             if contracts is None:
                 raise Exception("Contracts not found")
@@ -67,7 +71,7 @@ class ContractRepository(ContractRepositoryInterface):
             contract_entity.remaining_amount = contract.remaining_amount
             contract_entity.status = contract.status
 
-            self.session.commit()
+            self.update()
             capture_event({"message": f"Contract {contract.id} updated successfully", "level": "info"})
 
         except Exception as e:
@@ -78,8 +82,7 @@ class ContractRepository(ContractRepositoryInterface):
         try:
             contract = self.get_contract(contract_id)
 
-            self.session.delete(contract)
-            self.session.commit()
+            self.delete(contract)
             capture_event({"message": f"Contract {contract_id} deleted", "level": "info"})
 
         except Exception as e:

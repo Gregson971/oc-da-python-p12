@@ -1,9 +1,7 @@
 import jwt
 
+from kink import di
 from sentry_sdk import capture_exception
-from dotenv import load_dotenv
-
-from src.infrastructure.services.get_token_payload import get_token_payload
 
 ROLES = {
     'manager': [
@@ -35,10 +33,8 @@ def check_permission(role, permission):
 def require_permission(permission):
     def decorator(func):
         def wrapper(*args, **kwargs):
-            load_dotenv()
-
             try:
-                payload = get_token_payload()
+                payload = di["token_payload"]
                 role = payload['role']
 
                 if not check_permission(role, permission):

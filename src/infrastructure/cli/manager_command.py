@@ -5,15 +5,13 @@ from rich.console import Console
 from rich.table import Table
 from types import SimpleNamespace
 
-from src.infrastructure.services.database_connect import set_session
-from src.infrastructure.services.remove_token import remove_token
+from src.infrastructure.helpers.remove_token import remove_token
 
 from src.domain.use_cases.manage_manager import ManageManager
 
 
 console = Console()
-session = set_session()
-manage_manager = ManageManager(session)
+manage_manager = ManageManager()
 
 
 class ManagerCommand:
@@ -22,6 +20,7 @@ class ManagerCommand:
         console.print("\nEpicEvents Manager CRM menu\n", style="bold blue")
 
         console.print("Main menu", style="bold blue")
+        console.print("0. Show collaborators", style="bold green")
         console.print("1. Create a collaborator", style="bold green")
         console.print("2. Update manager", style="bold green")
         console.print("3. Delete manager", style="bold red")
@@ -40,6 +39,7 @@ class ManagerCommand:
         console.print("16. Logout", style="bold green")
 
         option_mapping = {
+            0: self.get_collaborators,
             1: self.create_collaborator,
             2: self.update_manager,
             3: self.delete_manager,
@@ -109,6 +109,29 @@ class ManagerCommand:
         )
 
         self.run()
+
+    def get_collaborators(self):
+        """Show all collaborators."""
+
+        collaborator_list = manage_manager.get_collaborators()
+
+        if not collaborator_list:
+            console.print("No collaborators found!", style="bold red")
+            self.run()
+        else:
+            table = Table(title="Collaborators")
+            table.add_column("First name", style="bold blue")
+            table.add_column("Last name", style="bold blue")
+            table.add_column("Email", style="bold blue")
+            table.add_column("Role", style="bold blue")
+
+            for collaborator in collaborator_list:
+                table.add_row(
+                    collaborator.first_name, collaborator.last_name, collaborator.email, str(collaborator.role)
+                )
+
+            console.print(table)
+            self.run()
 
     def update_manager(self):
         """Update manager."""

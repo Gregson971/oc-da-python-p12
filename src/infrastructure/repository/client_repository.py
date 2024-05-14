@@ -1,12 +1,11 @@
 from sentry_sdk import capture_event, capture_exception
 
 from src.domain.interfaces.client_repository_interface import ClientRepositoryInterface
+from src.infrastructure.repository.abstract_repository import AbstractRepository
 from src.domain.entities.client import Client
 
 
-class ClientRepository(ClientRepositoryInterface):
-    def __init__(self, session):
-        self.session = session
+class ClientRepository(ClientRepositoryInterface, AbstractRepository):
 
     def create_client(self, client: Client) -> None:
         try:
@@ -20,8 +19,7 @@ class ClientRepository(ClientRepositoryInterface):
                 commercial_id=client.commercial_id,
             )
 
-            self.session.add(client_entity)
-            self.session.commit()
+            self.add(client_entity)
             capture_event({"message": f"Client {client.first_name} {client.last_name} created", "level": "info"})
 
         except Exception as e:
@@ -30,7 +28,7 @@ class ClientRepository(ClientRepositoryInterface):
 
     def get_client(self, client_id: int) -> Client:
         try:
-            client = self.session.query(Client).get(client_id)
+            client = self.get(Client, client_id)
 
             if client is None:
                 raise Exception("Client not found")
@@ -49,7 +47,7 @@ class ClientRepository(ClientRepositoryInterface):
 
     def get_clients(self) -> list[Client]:
         try:
-            clients = self.session.query(Client).all()
+            clients = self.get_all(Client)
 
             if clients is None:
                 raise Exception("Clients not found")
@@ -72,7 +70,7 @@ class ClientRepository(ClientRepositoryInterface):
             client_entity.phone_number = client.phone_number
             client_entity.company_name = client.company_name
 
-            self.session.commit()
+            self.update()
             capture_event(
                 {"message": f"Client {client.first_name} {client.last_name} updated successfully", "level": "info"}
             )
@@ -85,8 +83,7 @@ class ClientRepository(ClientRepositoryInterface):
         try:
             client = self.get_client(client_id)
 
-            self.session.delete(client)
-            self.session.commit()
+            self.delete(client)
             capture_event({"message": f"Client {client.first_name} {client.last_name} deleted", "level": "info"})
 
         except Exception as e:

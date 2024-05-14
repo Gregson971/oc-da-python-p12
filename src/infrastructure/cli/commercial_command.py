@@ -1,21 +1,19 @@
 import inquirer
 
+from kink import di
 from rich.console import Console
 from rich.table import Table
 from types import SimpleNamespace
 from datetime import datetime
 from dateutil.parser import parse as parse_date
 
-from src.infrastructure.services.database_connect import set_session
-from src.infrastructure.services.get_token_payload import get_token_payload
-from src.infrastructure.services.remove_token import remove_token
+from src.infrastructure.helpers.remove_token import remove_token
 
 from src.domain.use_cases.manage_commercial import ManageCommercial
 
 
 console = Console()
-session = set_session()
-manage_commercial = ManageCommercial(session)
+manage_commercial = ManageCommercial()
 
 
 class CommercialCommand:
@@ -62,7 +60,7 @@ class CommercialCommand:
 
     def create_client(self):
         """Create a client."""
-        payload = get_token_payload()
+        payload = di["token_payload"]
 
         information = input("Information: ")
         first_name = input("First name: ")
@@ -90,7 +88,7 @@ class CommercialCommand:
     def update_client(self):
         """Update a client."""
 
-        payload = get_token_payload()
+        payload = di["token_payload"]
 
         client_list = manage_commercial.get_clients()
         client_list = [
@@ -123,6 +121,7 @@ class CommercialCommand:
             )
         )
         console.print("Client updated successfully!", style="bold green")
+        self.run()
 
     def update_contract(self):
         """Update a contract."""
@@ -149,6 +148,7 @@ class CommercialCommand:
             )
         )
         console.print("Contract updated successfully!", style="bold green")
+        self.run()
 
     def get_unsigned_contracts(self):
         """Show unsigned contracts."""
@@ -254,21 +254,25 @@ class CommercialCommand:
         attendees = input("Attendees: ")
         notes = input("Notes: ")
 
-        manage_commercial.create_event(
-            SimpleNamespace(
-                name=name,
-                location=location,
-                started_date=started_date,
-                ended_date=ended_date,
-                attendees=attendees,
-                notes=notes,
-                contract_id=contract_id,
-                support_contact_id=support_id,
+        try:
+            manage_commercial.create_event(
+                SimpleNamespace(
+                    name=name,
+                    location=location,
+                    started_date=started_date,
+                    ended_date=ended_date,
+                    attendees=attendees,
+                    notes=notes,
+                    contract_id=contract_id,
+                    support_contact_id=support_id,
+                )
             )
-        )
 
-        console.print(f"Event {name} created successfully!", style="bold green")
-        self.run()
+            console.print(f"Event {name} created successfully!", style="bold green")
+            self.run()
+        except Exception as e:
+            console.print(f"An error occurred while creating the event: {e}", style="bold red")
+            self.run()
 
     def get_clients(self):
         """Show clients."""

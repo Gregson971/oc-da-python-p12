@@ -1,14 +1,14 @@
+from kink import di
 from sentry_sdk import capture_event, capture_exception
 
+from sqlalchemy.exc import IntegrityError
+
 from src.domain.interfaces.event_repository_interface import EventRepositoryInterface
+from src.infrastructure.repository.abstract_repository import AbstractRepository
 from src.domain.entities.event import Event
 
-from src.infrastructure.services.get_token_payload import get_token_payload
 
-
-class EventRepository(EventRepositoryInterface):
-    def __init__(self, session):
-        self.session = session
+class EventRepository(EventRepositoryInterface, AbstractRepository):
 
     def create_event(self, event: Event) -> None:
         try:
@@ -23,9 +23,12 @@ class EventRepository(EventRepositoryInterface):
                 contract_id=event.contract_id,
             )
 
-            self.session.add(event_entity)
-            self.session.commit()
+            self.add(event_entity)
             capture_event({"message": f"Event {event.name} created", "level": "info"})
+
+        except IntegrityError as e:
+            capture_exception(e)
+            raise Exception("Event already exists")
 
         except Exception as e:
             capture_exception(e)
@@ -33,7 +36,7 @@ class EventRepository(EventRepositoryInterface):
 
     def get_event(self, event_id: int) -> Event:
         try:
-            event = self.session.query(Event).get(event_id)
+            event = self.get(Event, event_id)
 
             if event is None:
                 raise Exception("Event not found")
@@ -52,7 +55,7 @@ class EventRepository(EventRepositoryInterface):
 
     def get_events(self) -> list[Event]:
         try:
-            events = self.session.query(Event).all()
+            events = self.get_all(Event)
 
             if events is None:
                 raise Exception("Events not found")
@@ -75,7 +78,7 @@ class EventRepository(EventRepositoryInterface):
             event_entity.attendes = event.attendes
             event_entity.notes = event.notes
 
-            self.session.commit()
+            self.update()
             capture_event({"message": f"Event {event.name} updated successfully", "level": "info"})
 
         except Exception as e:
@@ -86,8 +89,7 @@ class EventRepository(EventRepositoryInterface):
         try:
             event = self.get_event(event_id)
 
-            self.session.delete(event)
-            self.session.commit()
+            self.delete(event)
             capture_event({"message": f"Event {event.name} deleted", "level": "info"})
 
         except Exception as e:
@@ -96,7 +98,7 @@ class EventRepository(EventRepositoryInterface):
 
     def get_assigned_events(self) -> list[Event]:
         try:
-            payload = get_token_payload()
+            payload = di["token_payload"]
             support_id = payload["id"]
             events = self.session.query(Event).filter(Event.support_contact_id == support_id).all()
 

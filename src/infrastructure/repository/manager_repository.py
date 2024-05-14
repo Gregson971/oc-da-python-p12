@@ -2,12 +2,11 @@ from sentry_sdk import capture_event, capture_exception
 from sqlalchemy.exc import IntegrityError
 
 from src.domain.interfaces.manager_repository_interface import ManagerRepositoryInterface
+from src.infrastructure.repository.abstract_repository import AbstractRepository
 from src.domain.entities.collaborator import Manager as ManagerEntity
 
 
-class ManagerRepository(ManagerRepositoryInterface):
-    def __init__(self, session):
-        self.session = session
+class ManagerRepository(ManagerRepositoryInterface, AbstractRepository):
 
     def create_manager(self, manager: ManagerEntity) -> None:
         try:
@@ -19,9 +18,7 @@ class ManagerRepository(ManagerRepositoryInterface):
                 role='manager',
             )
 
-            self.session.add(manager_entity)
-            self.session.commit()
-
+            self.add(manager_entity)
             capture_event({"message": f"Manager {manager.first_name} {manager.last_name} registered", "level": "info"})
 
         except IntegrityError as e:
@@ -33,7 +30,7 @@ class ManagerRepository(ManagerRepositoryInterface):
 
     def get_manager(self, manager_id: int) -> ManagerEntity:
         try:
-            manager = self.session.query(ManagerEntity).get(manager_id)
+            manager = self.get(ManagerEntity, manager_id)
 
             if manager is None:
                 raise Exception("Manager not found")
@@ -52,7 +49,7 @@ class ManagerRepository(ManagerRepositoryInterface):
 
     def get_managers(self) -> list[ManagerEntity]:
         try:
-            managers = self.session.query(ManagerEntity).all()
+            managers = self.get_all(ManagerEntity)
 
             if managers is None:
                 raise Exception("Managers not found")
@@ -73,7 +70,7 @@ class ManagerRepository(ManagerRepositoryInterface):
             manager_entity.email = manager.email
             manager_entity.password = manager.password
 
-            self.session.commit()
+            self.update()
 
             capture_event(
                 {"message": f"Manager {manager.first_name} {manager.last_name} updated successfully", "level": "info"}
@@ -87,8 +84,7 @@ class ManagerRepository(ManagerRepositoryInterface):
         try:
             manager = self.get_manager(manager_id)
 
-            self.session.delete(manager)
-            self.session.commit()
+            self.delete(manager)
 
             capture_event(
                 {"message": f"Manager {manager.first_name} {manager.last_name} deleted successfully", "level": "info"}

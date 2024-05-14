@@ -12,50 +12,48 @@ from src.infrastructure.repository.event_repository import EventRepository
 
 
 class ManageCommercial:
-    def __init__(self, session):
-        self.session = session
 
     def get_clients(self) -> List[Client]:
-        return ClientRepository(self.session).get_clients()
+        return ClientRepository().get_clients()
 
     def get_contrats(self) -> List[Contract]:
-        return ContractRepository(self.session).get_contracts()
+        return ContractRepository().get_contracts()
 
     def get_events(self) -> List[Event]:
-        return EventRepository(self.session).get_events()
+        return EventRepository().get_events()
 
     @require_permission('create_client')
     def get_client(self, client_id: int) -> Client:
-        return ClientRepository(self.session).get_client(client_id)
+        return ClientRepository().get_client(client_id)
 
     @require_permission('create_client')
     def create_client(self, client: Client) -> Client:
-        return ClientRepository(self.session).create_client(client)
+        return ClientRepository().create_client(client)
 
     @require_permission('update_client')
     def update_client(self, client: Client) -> Client:
-        return ClientRepository(self.session).update_client(client)
+        return ClientRepository().update_client(client)
 
     @require_permission('create_client_contract')
     def get_contracts(self) -> List[Contract]:
-        return ContractRepository(self.session).get_contracts()
+        return ContractRepository().get_contracts()
 
     @require_permission('create_client_contract')
     def get_contract(self, contract_id: int) -> Contract:
-        return ContractRepository(self.session).get_contract(contract_id)
+        return ContractRepository().get_contract(contract_id)
 
     @require_permission('update_client_contract')
     def update_contract(self, contract: Contract) -> Contract:
-        return ContractRepository(self.session).update_contract(contract)
+        return ContractRepository().update_contract(contract)
 
     @require_permission('filter_contracts')
     def get_unsigned_contracts(self) -> List[Contract]:
-        return ContractRepository(self.session).get_unsigned_contracts()
+        return ContractRepository().get_unsigned_contracts()
 
     @require_permission('filter_contracts')
     def get_unpaid_contracts(self) -> List[Contract]:
-        return ContractRepository(self.session).get_unpaid_contracts()
+        return ContractRepository().get_unpaid_contracts()
 
     @require_permission('create_event')
     def create_event(self, event: Event) -> Event:
-        return EventRepository(self.session).create_event(event)
+        return EventRepository().create_event(event)

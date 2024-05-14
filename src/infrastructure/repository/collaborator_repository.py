@@ -1,12 +1,11 @@
 from sentry_sdk import capture_event, capture_exception
 
 from src.domain.interfaces.collaborator_repository_interface import CollaboratorRepositoryInterface
+from src.infrastructure.repository.abstract_repository import AbstractRepository
 from src.domain.entities.collaborator import Collaborator
 
 
-class CollaboratorRepository(CollaboratorRepositoryInterface):
-    def __init__(self, session):
-        self.session = session
+class CollaboratorRepository(CollaboratorRepositoryInterface, AbstractRepository):
 
     def login(self, email: str, password) -> Collaborator:
         try:

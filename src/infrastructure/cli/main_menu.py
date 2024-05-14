@@ -1,18 +1,15 @@
 import getpass
 
+from kink import di
 from rich.console import Console
 
 from src.domain.use_cases.manage_collaborator import ManageCollaborator
-
-from src.infrastructure.services.database_connect import set_session
-from src.infrastructure.services.get_token_payload import get_token_payload
 
 from src.infrastructure.cli.manager_command import ManagerCommand
 from src.infrastructure.cli.commercial_command import CommercialCommand
 from src.infrastructure.cli.support_command import SupportCommand
 
 console = Console()
-session = set_session()
 
 
 class MainMenu:
@@ -22,7 +19,7 @@ class MainMenu:
         console.print("Welcome to the EpicEvents CRM CLI\n", style="bold green")
 
         try:
-            payload = get_token_payload()
+            payload = di["token_payload"]
             role = payload['role']
         except Exception:
             role = None
@@ -49,10 +46,10 @@ class MainMenu:
         email = input("Email: ")
         password = getpass.getpass("Password: ")
 
-        collaborator = ManageCollaborator(session)
+        collaborator = ManageCollaborator()
         collaborator.login(email, password)
 
-        payload = get_token_payload()
+        payload = di["token_payload"]
         role = payload['role']
 
         console.print("Collaborator logged in successfully!", style="bold green")

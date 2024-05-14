@@ -1,19 +1,16 @@
-import os
 import jwt
 
-from dotenv import load_dotenv
+from kink import di
 from sentry_sdk import capture_exception
 
 
 def get_token_payload() -> dict:
     """Get token payload."""
     try:
-        secret_key = os.getenv("SECRET_KEY")
+        secret_key = di["secret_key"]
         f = open(".token", "r")
         token = f.read()
         f.close()
-
-        load_dotenv()
 
         payload = jwt.decode(token, secret_key, algorithms=['HS256'])
 

@@ -4,14 +4,12 @@ from rich.console import Console
 from rich.table import Table
 from types import SimpleNamespace
 
-from src.infrastructure.services.database_connect import set_session
-from src.infrastructure.services.remove_token import remove_token
+from src.infrastructure.helpers.remove_token import remove_token
 
 from src.domain.use_cases.manage_support import ManageSupport
 
 console = Console()
-session = set_session()
-manage_support = ManageSupport(session)
+manage_support = ManageSupport()
 
 
 class SupportCommand:

@@ -354,6 +354,20 @@ files = [
 ansicon = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
+name = "kink"
+version = "0.8.0"
+description = "Dependency injection for python."
+optional = false
+python-versions = "<4.0,>=3.8"
+files = [
+    {file = "kink-0.8.0-py3-none-any.whl", hash = "sha256:c0b959cd291e057a72c501ffc77498416ef5afd5f30476a7d5e6fc3be09001a5"},
+    {file = "kink-0.8.0.tar.gz", hash = "sha256:5aa6dcb4c0abde9ed15c4f73e52f163802c91fd7d804b3e1e4e8e78b9cef48f2"},
+]
+
+[package.dependencies]
+typing_extensions = ">=4.9.0,<5.0.0"
+
+[[package]]
 name = "markdown-it-py"
 version = "3.0.0"
 description = "Python port of markdown-it. Markdown parsing, done right!"
@@ -997,4 +1011,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "ae368afae1a39baa7adc7ef0ef7617386f1fa41d3c8b6884b6f9795e7ca1379b"
+content-hash = "c15c3aa174992342fbfe1e2aede2667fa5f19571645396b4dfdb8f374b048b63"
