@@ -61,9 +61,9 @@ class ManagerRepository(ManagerRepositoryInterface, AbstractRepository):
             capture_exception(e)
             raise Exception(f"An error occurred while getting the managers collaborator: {e}")
 
-    def update_manager(self, manager) -> None:
+    def update_manager(self, manager_id, manager) -> None:
         try:
-            manager_entity = self.get_manager(manager.id)
+            manager_entity = self.get_manager(manager_id)
 
             manager_entity.first_name = manager.first_name
             manager_entity.last_name = manager.last_name

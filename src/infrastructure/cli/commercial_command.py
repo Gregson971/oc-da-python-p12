@@ -43,7 +43,7 @@ class CommercialCommand:
             5: self.get_unpaid_contracts,
             6: self.create_event,
             7: self.get_clients,
-            8: self.get_contrats,
+            8: self.get_contracts,
             9: self.get_events,
             10: self.exit,
             11: self.logout,
@@ -100,17 +100,17 @@ class CommercialCommand:
         client_id = int(inquirer.prompt(client_choices)["client"])
         client = manage_commercial.get_client(client_id)
 
-        information = input(f"Information ({client.information}): ")
-        first_name = input(f"First name ({client.first_name}): ")
-        last_name = input(f"Last name ({client.last_name}): ")
-        email = input(f"Email ({client.email}): ")
-        phone_number = input(f"Phone number ({client.phone_number}): ")
-        company_name = input(f"Company name ({client.company_name}): ")
+        information = input(f"Information ({client.information}): ") or client.information
+        first_name = input(f"First name ({client.first_name}): ") or client.first_name
+        last_name = input(f"Last name ({client.last_name}): ") or client.last_name
+        email = input(f"Email ({client.email}): ") or client.email
+        phone_number = input(f"Phone number ({client.phone_number}): ") or client.phone_number
+        company_name = input(f"Company name ({client.company_name}): ") or client.company_name
         commercial_id = payload['id']
 
         manage_commercial.update_client(
+            client_id,
             SimpleNamespace(
-                id=client_id,
                 information=information,
                 first_name=first_name,
                 last_name=last_name,
@@ -118,7 +118,7 @@ class CommercialCommand:
                 phone_number=phone_number,
                 company_name=company_name,
                 commercial_id=commercial_id,
-            )
+            ),
         )
         console.print("Client updated successfully!", style="bold green")
         self.run()
@@ -135,17 +135,19 @@ class CommercialCommand:
         contract_id = int(inquirer.prompt(contract_choices)["contract"])
         contract = manage_commercial.get_contract(contract_id)
 
-        total_amount = float(input(f"Total amount ({contract.total_amount}): "))
-        remaining_amount = float(input(f"Remaining amount ({contract.remaining_amount}): "))
-        status = input(f"Status ({contract.status}): ")
+        total_amount = float(input(f"Total amount ({contract.total_amount}): ") or contract.total_amount)
+        remaining_amount = float(
+            input(f"Remaining amount ({contract.remaining_amount}): ") or contract.remaining_amount
+        )
+        status = input(f"Status ({contract.status}): ") or contract.status
 
         manage_commercial.update_contract(
+            contract_id,
             SimpleNamespace(
-                id=contract_id,
                 total_amount=total_amount,
                 remaining_amount=remaining_amount,
                 status=status,
-            )
+            ),
         )
         console.print("Contract updated successfully!", style="bold green")
         self.run()
@@ -304,7 +306,7 @@ class CommercialCommand:
             console.print(table)
             self.run()
 
-    def get_contrats(self):
+    def get_contracts(self):
         """Show contracts."""
 
         contract_list = manage_commercial.get_contracts()

@@ -63,9 +63,9 @@ class CommercialRepository(CommercialRepositoryInterface, AbstractRepository):
             capture_exception(e)
             raise Exception(f"An error occurred while getting the commercial collaborators: {e}")
 
-    def update_commercial(self, commercial: CommercialEntity) -> None:
+    def update_commercial(self, commercial_id: int, commercial: CommercialEntity) -> None:
         try:
-            commercial_entity = self.get_commercial(commercial.id)
+            commercial_entity = self.get_commercial(commercial_id)
 
             commercial_entity.first_name = commercial.first_name
             commercial_entity.last_name = commercial.last_name

@@ -27,7 +27,7 @@ class ManageManager:
         return EventRepository().get_events()
 
     @require_permission('create_collaborator')
-    def get_collaborators(self) -> List[Commercial]:
+    def get_collaborators(self) -> List:
         return (
             CommercialRepository().get_commercials()
             + ManagerRepository().get_managers()
@@ -47,8 +47,8 @@ class ManageManager:
         return ManagerRepository().get_manager(manager_id)
 
     @require_permission('update_collaborator')
-    def update_manager(self, manager: Manager) -> Manager:
-        return ManagerRepository().update_manager(manager)
+    def update_manager(self, manager_id: int, manager: Manager) -> Manager:
+        return ManagerRepository().update_manager(manager_id, manager)
 
     @require_permission('delete_collaborator')
     def delete_manager(self, manager_id: int) -> bool:
@@ -67,8 +67,8 @@ class ManageManager:
         return CommercialRepository().get_commercial(commercial_id)
 
     @require_permission('update_collaborator')
-    def update_commercial(self, commercial: Commercial) -> Commercial:
-        return CommercialRepository().update_commercial(commercial)
+    def update_commercial(self, commercial_id: int, commercial: Commercial) -> Commercial:
+        return CommercialRepository().update_commercial(commercial_id, commercial)
 
     @require_permission('delete_collaborator')
     def delete_commercial(self, commercial_id: int) -> bool:
@@ -87,8 +87,8 @@ class ManageManager:
         return SupportRepository().get_support(support_id)
 
     @require_permission('update_collaborator')
-    def update_support(self, support: Support) -> Support:
-        return SupportRepository().update_support(support)
+    def update_support(self, support_id: int, support: Support) -> Support:
+        return SupportRepository().update_support(support_id, support)
 
     @require_permission('delete_collaborator')
     def delete_support(self, support_id: int) -> bool:
@@ -107,13 +107,13 @@ class ManageManager:
         return ContractRepository().get_contract(contract_id)
 
     @require_permission('update_contract')
-    def update_contract(self, contract: Contract) -> Contract:
-        return ContractRepository().update_contract(contract)
+    def update_contract(self, contract_id: int, contract: Contract) -> Contract:
+        return ContractRepository().update_contract(contract_id, contract)
 
     @require_permission('filter_events')
     def get_events_with_no_assigned_support(self) -> List[Event]:
         return EventRepository().get_events_with_no_assigned_support()
 
     @require_permission('update_event')
-    def update_event(self, event: Event) -> Event:
-        return EventRepository().update_event(event)
+    def update_event(self, event_id: int, event: Event) -> Event:
+        return EventRepository().update_event(event_id, event)

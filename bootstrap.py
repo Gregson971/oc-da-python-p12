@@ -18,6 +18,7 @@ def bootstrap_di() -> None:
     di["db_port"] = getenv("DB_PORT")
     di["db_name"] = getenv("DB_NAME")
     di["secret_key"] = getenv("SECRET_KEY")
+    di["token_delta"] = getenv("TOKEN_DELTA")
 
     # Create the connection string
     di["connection_string"] = (

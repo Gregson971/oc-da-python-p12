@@ -143,9 +143,9 @@ class ManagerCommand:
         manager_id = int(inquirer.prompt(manager_choices)["manager"])
         manager = manage_manager.get_manager(manager_id)
 
-        first_name = input(f"First name ({manager.first_name}): ")
-        last_name = input(f"Last name ({manager.last_name}): ")
-        email = input(f"Email ({manager.email}): ")
+        first_name = input(f"First name ({manager.first_name}): ") or manager.first_name
+        last_name = input(f"Last name ({manager.last_name}): ") or manager.last_name
+        email = input(f"Email ({manager.email}): ") or manager.email
         password = getpass.getpass("Password: ")
         confirm_password = getpass.getpass("Confirm password: ")
 
@@ -154,13 +154,13 @@ class ManagerCommand:
             return
 
         manage_manager.update_manager(
+            manager_id,
             SimpleNamespace(
-                id=manager_id,
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
                 password=password,
-            )
+            ),
         )
         console.print("Manager updated successfully!", style="bold green")
         self.run()
@@ -195,9 +195,9 @@ class ManagerCommand:
         commercial_id = int(inquirer.prompt(commercial_choices)["commercial"])
         commercial = manage_manager.get_commercial(commercial_id)
 
-        first_name = input(f"First name ({commercial.first_name}): ")
-        last_name = input(f"Last name ({commercial.last_name}): ")
-        email = input(f"Email ({commercial.email}): ")
+        first_name = input(f"First name ({commercial.first_name}): ") or commercial.first_name
+        last_name = input(f"Last name ({commercial.last_name}): ") or commercial.last_name
+        email = input(f"Email ({commercial.email}): ") or commercial.email
         password = getpass.getpass("Password: ")
         confirm_password = getpass.getpass("Confirm password: ")
 
@@ -206,13 +206,13 @@ class ManagerCommand:
             return
 
         manage_manager.update_commercial(
+            commercial_id,
             SimpleNamespace(
-                id=commercial_id,
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
                 password=password,
-            )
+            ),
         )
         console.print("Commercial updated successfully!", style="bold green")
         self.run()
@@ -247,9 +247,9 @@ class ManagerCommand:
         support_id = int(inquirer.prompt(support_choices)["support"])
         support = manage_manager.get_support(support_id)
 
-        first_name = input(f"First name ({support.first_name}): ")
-        last_name = input(f"Last name ({support.last_name}): ")
-        email = input(f"Email ({support.email}): ")
+        first_name = input(f"First name ({support.first_name}): ") or support.first_name
+        last_name = input(f"Last name ({support.last_name}): ") or support.last_name
+        email = input(f"Email ({support.email}): ") or support.email
         password = getpass.getpass("Password: ")
         confirm_password = getpass.getpass("Confirm password: ")
 
@@ -258,13 +258,13 @@ class ManagerCommand:
             return
 
         manage_manager.update_support(
+            support_id,
             SimpleNamespace(
-                id=support_id,
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
                 password=password,
-            )
+            ),
         )
         console.print("Support updated successfully!", style="bold green")
         self.run()
@@ -331,17 +331,19 @@ class ManagerCommand:
         contract_id = int(inquirer.prompt(contract_choices)["contract"])
         contract = manage_manager.get_contract(contract_id)
 
-        total_amount = float(input(f"Total amount ({contract.total_amount}): "))
-        remaining_amount = float(input(f"Remaining amount ({contract.remaining_amount}): "))
-        status = input(f"Status ({contract.status}): ")
+        total_amount = float(input(f"Total amount ({contract.total_amount}): ") or contract.total_amount)
+        remaining_amount = float(
+            input(f"Remaining amount ({contract.remaining_amount}): ") or contract.remaining_amount
+        )
+        status = input(f"Status ({contract.status}): ") or contract.status
 
         manage_manager.update_contract(
+            contract_id,
             SimpleNamespace(
-                id=contract_id,
                 total_amount=total_amount,
                 remaining_amount=remaining_amount,
                 status=status,
-            )
+            ),
         )
         console.print("Contract updated successfully!", style="bold green")
 
@@ -389,23 +391,23 @@ class ManagerCommand:
         event_id = int(inquirer.prompt(event_choices)["event"])
         event = manage_manager.get_event(event_id)
 
-        name = input(f"Name ({event.name}): ")
-        location = input(f"Location ({event.location}): ")
-        started_at = input(f"Started at ({event.started_at}): ")
-        ended_at = input(f"Ended at ({event.ended_at}): ")
-        attendees = input(f"Attendees ({event.attendees}): ")
-        notes = input(f"Notes ({event.notes}): ")
+        name = input(f"Name ({event.name}): ") or event.name
+        location = input(f"Location ({event.location}): ") or event.location
+        started_at = input(f"Started at ({event.started_at}): ") or event.started_at
+        ended_at = input(f"Ended at ({event.ended_at}): ") or event.ended_at
+        attendees = input(f"Attendees ({event.attendees}): ") or event.attendees
+        notes = input(f"Notes ({event.notes}): ") or event.notes
 
         manage_manager.update_event(
+            event_id,
             SimpleNamespace(
-                id=event_id,
                 name=name,
                 location=location,
                 started_at=started_at,
                 ended_at=ended_at,
                 attendees=attendees,
                 notes=notes,
-            )
+            ),
         )
         console.print("Event updated successfully!", style="bold green")
         self.run()

@@ -16,7 +16,7 @@ class ManageCommercial:
     def get_clients(self) -> List[Client]:
         return ClientRepository().get_clients()
 
-    def get_contrats(self) -> List[Contract]:
+    def get_contracts(self) -> List[Contract]:
         return ContractRepository().get_contracts()
 
     def get_events(self) -> List[Event]:
@@ -31,20 +31,16 @@ class ManageCommercial:
         return ClientRepository().create_client(client)
 
     @require_permission('update_client')
-    def update_client(self, client: Client) -> Client:
-        return ClientRepository().update_client(client)
-
-    @require_permission('create_client_contract')
-    def get_contracts(self) -> List[Contract]:
-        return ContractRepository().get_contracts()
+    def update_client(self, client_id: int, client: Client) -> Client:
+        return ClientRepository().update_client(client_id, client)
 
     @require_permission('create_client_contract')
     def get_contract(self, contract_id: int) -> Contract:
         return ContractRepository().get_contract(contract_id)
 
     @require_permission('update_client_contract')
-    def update_contract(self, contract: Contract) -> Contract:
-        return ContractRepository().update_contract(contract)
+    def update_contract(self, contract_id: int, contract: Contract) -> Contract:
+        return ContractRepository().update_contract(contract_id, contract)
 
     @require_permission('filter_contracts')
     def get_unsigned_contracts(self) -> List[Contract]:

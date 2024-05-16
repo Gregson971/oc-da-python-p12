@@ -59,9 +59,9 @@ class ClientRepository(ClientRepositoryInterface, AbstractRepository):
             capture_exception(e)
             raise Exception(f"An error occurred while getting the client collaborator: {e}")
 
-    def update_client(self, client: Client) -> None:
+    def update_client(self, client_id: int, client: Client) -> None:
         try:
-            client_entity = self.get_client(client.id)
+            client_entity = self.get_client(client_id)
 
             client_entity.information = client.information
             client_entity.first_name = client.first_name

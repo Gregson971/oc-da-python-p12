@@ -27,5 +27,5 @@ class ManageSupport:
         return EventRepository().get_assigned_events()
 
     @require_permission('update_event')
-    def update_event(self, event: Event) -> Event:
-        return EventRepository().update_event(event)
+    def update_event(self, event_id: int, event: Event) -> Event:
+        return EventRepository().update_event(event_id, event)

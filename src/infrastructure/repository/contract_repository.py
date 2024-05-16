@@ -63,16 +63,16 @@ class ContractRepository(ContractRepositoryInterface, AbstractRepository):
             capture_exception(e)
             raise Exception(f"An error occurred while getting the contracts: {e}")
 
-    def update_contract(self, contract: Contract) -> None:
+    def update_contract(self, contract_id: int, contract: Contract) -> None:
         try:
-            contract_entity = self.get_contract(contract.id)
+            contract_entity = self.get_contract(contract_id)
 
             contract_entity.total_amount = contract.total_amount
             contract_entity.remaining_amount = contract.remaining_amount
             contract_entity.status = contract.status
 
             self.update()
-            capture_event({"message": f"Contract {contract.id} updated successfully", "level": "info"})
+            capture_event({"message": f"Contract {contract_id} updated successfully", "level": "info"})
 
         except Exception as e:
             capture_exception(e)

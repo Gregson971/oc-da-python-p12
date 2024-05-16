@@ -1,11 +1,9 @@
-import os
 import jwt
 
+from kink import di
 from datetime import datetime, timedelta, timezone
 from rich.console import Console
-from dotenv import load_dotenv
 
-from src.domain.entities.collaborator import Collaborator
 from src.infrastructure.repository.collaborator_repository import CollaboratorRepository
 
 console = Console()
@@ -13,11 +11,9 @@ console = Console()
 
 class ManageCollaborator:
 
-    def login(self, email: str, password) -> Collaborator:
-        load_dotenv()
-
-        secret_key = os.getenv("SECRET_KEY")
-        token_delta = os.getenv("TOKEN_DELTA")
+    def login(self, email: str, password: str) -> str:
+        secret_key = di["secret_key"]
+        token_delta = di["token_delta"]
         token_delta = int(token_delta)
 
         collaborator = CollaboratorRepository().login(email, password)

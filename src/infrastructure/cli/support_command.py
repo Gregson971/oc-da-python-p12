@@ -88,23 +88,23 @@ class SupportCommand:
         event_id = int(inquirer.prompt(event_choices)["event"])
         event = manage_support.get_event(event_id)
 
-        name = input(f"Name ({event.name}): ")
-        location = input(f"Location ({event.location}): ")
-        started_at = input(f"Started at ({event.started_at}): ")
-        ended_at = input(f"Ended at ({event.ended_at}): ")
-        attendees = input(f"Attendees ({event.attendees}): ")
-        notes = input(f"Notes ({event.notes}): ")
+        name = input(f"Name ({event.name}): ") or event.name
+        location = input(f"Location ({event.location}): ") or event.location
+        started_at = input(f"Started at ({event.started_at}): ") or event.started_at
+        ended_at = input(f"Ended at ({event.ended_at}): ") or event.ended_at
+        attendees = input(f"Attendees ({event.attendees}): ") or event.attendees
+        notes = input(f"Notes ({event.notes}): ") or event.notes
 
         manage_support.update_event(
+            event_id,
             SimpleNamespace(
-                id=event_id,
                 name=name,
                 location=location,
                 started_at=started_at,
                 ended_at=ended_at,
                 attendees=attendees,
                 notes=notes,
-            )
+            ),
         )
         console.print("Event updated successfully!", style="bold green")
         self.run()

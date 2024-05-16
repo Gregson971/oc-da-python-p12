@@ -22,7 +22,6 @@ ROLES = {
         'create_event',
     ],
     'support': ['filter_events', 'update_event'],
-    'admin': ['create_collaborator', 'update_collaborator', 'delete_collaborator'],
 }
 
 

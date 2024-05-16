@@ -67,9 +67,9 @@ class EventRepository(EventRepositoryInterface, AbstractRepository):
             capture_exception(e)
             raise Exception(f"An error occurred while getting the events: {e}")
 
-    def update_event(self, event) -> None:
+    def update_event(self, event_id, event) -> None:
         try:
-            event_entity = self.get_event(event.id)
+            event_entity = self.get_event(event_id)
 
             event_entity.name = event.name
             event_entity.started_at = event.started_at

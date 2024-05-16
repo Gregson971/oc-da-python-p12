@@ -61,9 +61,9 @@ class SupportRepository(SupportRepositoryInterface, AbstractRepository):
             capture_exception(e)
             raise Exception(f"An error occurred while getting the support collaborators: {e}")
 
-    def update_support(self, support) -> None:
+    def update_support(self, support_id, support) -> None:
         try:
-            support_entity = self.get_support(support.id)
+            support_entity = self.get_support(support_id)
 
             support_entity.first_name = support.first_name
             support_entity.last_name = support.last_name
