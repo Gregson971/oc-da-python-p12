@@ -43,11 +43,16 @@ GRANT ALL PRIVILEGES ON DATABASE nom_de_la_base_de_donnees TO nom_utilisateur;
 4. Créer un fichier `.env` à la racine du projet et ajouter les variables suivantes
 
 ```sh
-DB_NAME=nom_de_la_base_de_donnees
-DB_USER=nom_utilisateur
-DB_PASSWORD=mot_de_passe
-DB_HOST=adresse_ip
-DB_PORT=port
+DB_USER="db_nom_utilisateur"
+DB_PASSWORD="db_mot_de_passe"
+DB_HOST="db_host"
+DB_PORT="db_port"
+DB_NAME="db_name"
+ENV="development"
+PORT=8000
+SECRET_KEY="your_secret"
+TOKEN_DELTA=30
+SENTRY_DSN="https://your_sentry_dsn"
 ```
 
 ### Installation et exécution
@@ -74,6 +79,12 @@ poetry install
 
 ```sh
 poetry shell
+```
+
+5. Initialiser la base de données avec un collaborateur de type manager
+
+```sh
+python sample_data.py
 ```
 
 6. Exécuter le script
