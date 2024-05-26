@@ -6,8 +6,10 @@ from rich.table import Table
 from types import SimpleNamespace
 from datetime import datetime
 from dateutil.parser import parse as parse_date
+from sentry_sdk import capture_exception
 
 from src.infrastructure.helpers.remove_token import remove_token
+from src.infrastructure.helpers.validators import Validators
 
 from src.domain.use_cases.manage_commercial import ManageCommercial
 
@@ -65,7 +67,16 @@ class CommercialCommand:
         information = input("Information: ")
         first_name = input("First name: ")
         last_name = input("Last name: ")
-        email = input("Email: ")
+
+        try:
+            email = input("Email: ")
+            if not Validators.validate_email(email):
+                console.print("Invalid email!", style="bold red")
+                return
+        except Exception as e:
+            capture_exception(e)
+            console.print(str(e), style="bold red")
+            return
         phone_number = input("Phone number: ")
         company_name = input("Company name: ")
         commercial_id = payload['id']

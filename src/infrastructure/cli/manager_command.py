@@ -5,11 +5,12 @@ import bcrypt
 from rich.console import Console
 from rich.table import Table
 from types import SimpleNamespace
+from sentry_sdk import capture_exception
 
 from src.infrastructure.helpers.remove_token import remove_token
+from src.infrastructure.helpers.validators import Validators
 
 from src.domain.use_cases.manage_manager import ManageManager
-
 
 console = Console()
 manage_manager = ManageManager()
@@ -73,15 +74,30 @@ class ManagerCommand:
 
         roles = [inquirer.List("role", message="Select a role", choices=["manager", "commercial", "support", "admin"])]
 
+        role = inquirer.prompt(roles)["role"]
         first_name = input("First name: ")
         last_name = input("Last name: ")
-        email = input("Email: ")
-        role = inquirer.prompt(roles)["role"]
-        password = getpass.getpass("Password: ")
-        confirm_password = getpass.getpass("Confirm password: ")
 
-        if password != confirm_password:
-            console.print("Passwords do not match!", style="bold red")
+        try:
+            email = input("Email: ")
+            if not Validators.validate_email(email):
+                console.print("Invalid email!", style="bold red")
+                return
+        except Exception as e:
+            capture_exception(e)
+            console.print(str(e), style="bold red")
+            return
+
+        try:
+            password = getpass.getpass("Password: ")
+            confirm_password = getpass.getpass("Confirm password: ")
+
+            if not Validators.validate_password(password, confirm_password):
+                console.print("Invalid password!", style="bold red")
+                return
+        except Exception as e:
+            capture_exception(e)
+            console.print(str(e), style="bold red")
             return
 
         # Hash the password using bcrypt
@@ -99,6 +115,9 @@ class ManagerCommand:
         """Create collaborators."""
 
         collaborator_data = self.get_collaborator_information()
+
+        if collaborator_data is None:
+            self.run()
 
         if collaborator_data.role == "manager":
             manage_manager.create_manager(collaborator_data)
