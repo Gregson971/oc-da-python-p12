@@ -1,5 +1,6 @@
 import inquirer
 import getpass
+import bcrypt
 
 from rich.console import Console
 from rich.table import Table
@@ -83,12 +84,15 @@ class ManagerCommand:
             console.print("Passwords do not match!", style="bold red")
             return
 
+        # Hash the password using bcrypt
+        hashed_password = bcrypt.hashpw(confirm_password.encode('utf-8'), bcrypt.gensalt())
+
         return SimpleNamespace(
             first_name=first_name,
             last_name=last_name,
             email=email,
             role=role,
-            password=password,
+            password=hashed_password,
         )
 
     def create_collaborator(self):
