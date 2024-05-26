@@ -5,6 +5,8 @@ from .base import Base
 
 
 class Event(Base):
+    """Event entity"""
+
     __tablename__ = "events"
 
     id = Column(Integer, primary_key=True, autoincrement=True)

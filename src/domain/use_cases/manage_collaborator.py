@@ -12,6 +12,20 @@ console = Console()
 class ManageCollaborator:
 
     def login(self, email: str, password: str) -> str:
+        """
+        Login a collaborator
+
+        Args:
+            email (str): The collaborator email
+            password (str): The collaborator password
+
+        Returns:
+            str: The token
+
+        Raises:
+            Exception: If an error occurs while logging in the collaborator
+        """
+
         secret_key = di["secret_key"]
         token_delta = di["token_delta"]
         token_delta = int(token_delta)

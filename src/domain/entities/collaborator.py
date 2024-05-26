@@ -8,6 +8,8 @@ ROLES = [("commercial", "Commercial"), ("support", "Support"), ("manager", "Mana
 
 
 class Collaborator(Base):
+    """Collaborator entity"""
+
     __tablename__ = "collaborators"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -22,6 +24,8 @@ class Collaborator(Base):
 
 
 class Commercial(Collaborator):
+    """Commercial entity, inherits from Collaborator"""
+
     __tablename__ = "commercials"
 
     id = Column(Integer, ForeignKey('collaborators.id'), primary_key=True)
@@ -33,6 +37,8 @@ class Commercial(Collaborator):
 
 
 class Support(Collaborator):
+    """Support entity, inherits from Collaborator"""
+
     __tablename__ = "supports"
 
     id = Column(Integer, ForeignKey('collaborators.id'), primary_key=True)
@@ -44,6 +50,8 @@ class Support(Collaborator):
 
 
 class Manager(Collaborator):
+    """Manager entity, inherits from Collaborator"""
+
     __tablename__ = "managers"
 
     id = Column(Integer, ForeignKey('collaborators.id'), primary_key=True)

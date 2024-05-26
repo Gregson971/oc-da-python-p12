@@ -26,10 +26,39 @@ ROLES = {
 
 
 def check_permission(role, permission):
+    """
+    Check if a role has a permission.
+
+    Args:
+        role (str): The role to check.
+        permission (str): The permission to check.
+
+    Returns:
+        bool: True if the role has the permission, False otherwise.
+
+    Raises:
+        PermissionError: If the permission is not found in the role.
+    """
     return permission in ROLES.get(role, [])
 
 
 def require_permission(permission):
+    """
+    Decorator to check if a role has a permission.
+
+    Args:
+        permission (str): The permission to check.
+
+    Returns:
+        function: The wrapper function.
+
+    Raises:
+        PermissionError: If the permission is not found in the role.
+        ExpiredSignatureError: If the token is expired.
+        InvalidTokenError: If the token is invalid.
+        Exception: If an error occurs while checking the permission.
+    """
+
     def decorator(func):
         def wrapper(*args, **kwargs):
             try:

@@ -11,6 +11,8 @@ STATUSES = [('signed', 'Signed'), ('not-signed', 'Not signed')]
 
 
 class Contract(Base):
+    """Contract entity"""
+
     __tablename__ = "contracts"
 
     id = Column(Integer, primary_key=True, autoincrement=True)

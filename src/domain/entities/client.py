@@ -6,6 +6,8 @@ from .base import Base
 
 
 class Client(Base):
+    """Client entity"""
+
     __tablename__ = "clients"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
