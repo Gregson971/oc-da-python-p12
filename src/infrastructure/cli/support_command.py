@@ -67,12 +67,12 @@ class SupportCommand:
                 table.add_row(
                     str(event.id),
                     event.name,
-                    event.started_date,
-                    event.ended_date,
+                    str(event.started_date),
+                    str(event.ended_date),
                     event.location,
                     str(event.attendees),
                     event.notes,
-                    event.client.first_name + " " + event.client.last_name,
+                    event.contract.client.first_name + " " + event.contract.client.last_name,
                 )
 
             console.print(table)

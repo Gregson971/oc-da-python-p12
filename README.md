@@ -19,6 +19,10 @@ Développez une architecture back-end sécurisée avec Python et SQL
 
 - Avoir `Python`, `pip`, `Poetry` et `postgreSQL` installé sur sa machine.
 
+### Schéma de la base de données
+
+![erd-epicevents](doc/erd_epicevents.png)
+
 ### Création de la base de données
 
 1. Se connecter à PostgreSQL
@@ -92,3 +96,15 @@ python sample_data.py
 ```sh
 python main.py
 ```
+
+## Journalisation des erreurs avec Sentry
+
+Lien vers le tableau de bord Sentry : [Sentry](https://gregory-lama.sentry.io/issues/?project=4507153294950480&referrer=sidebar&statsPeriod=90d)
+
+## Rapport de couverture de test
+
+```sh
+pytest --cov=. --cov-report html
+```
+
+![coverage-report](doc/coverage_report.png)

@@ -72,7 +72,7 @@ class ManagerCommand:
     def get_collaborator_information(self):
         """Get collaborator information."""
 
-        roles = [inquirer.List("role", message="Select a role", choices=["manager", "commercial", "support", "admin"])]
+        roles = [inquirer.List("role", message="Select a role", choices=["manager", "commercial", "support"])]
 
         role = inquirer.prompt(roles)["role"]
         first_name = input("First name: ")
